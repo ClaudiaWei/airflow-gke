@@ -10,6 +10,7 @@ with DAG(
 ) as dag:
     create_pet_table = PostgresOperator(
         task_id="create_record_table",
+        postgres_conn_id="postgres_default",
         sql="""
             CREATE TABLE IF NOT EXISTS record (
             id SERIAL PRIMARY KEY,
