@@ -4,7 +4,7 @@ from datetime import datetime
 
 with DAG(
     dag_id="postgres_operator_dag",
-    start_date=datetime.datetime(2020,3,8),
+    start_date=datetime(2020,3,8),
     schedule_interval="@once",
     catchup=False,
 ) as dag:
