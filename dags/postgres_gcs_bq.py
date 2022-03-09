@@ -9,7 +9,7 @@ GCS_BUCKET = os.environ.get("GCP_GCS_BUCKET_NAME", "airflow-gke")
 FILENAME = "record.json"
 SQL_QUERY = "select * from record;"
 DATASET_NAME = "airflow"
-TABLE_NAME = "test"
+TABLE_NAME = "record"
 
 with DAG(
     dag_id="gcs_operator_dag",
@@ -36,14 +36,8 @@ with DAG(
         source_format="NEWLINE_DELIMITED_JSON",
         create_disposition="CREATE_IF_NEEDED",
         write_disposition="WRITE_TRUNCATE",
+        autodetect=True,
         dag=dag,
-        schema_fields=[
-            {'name': 'id', 'type': 'INT64', 'mode': 'Required'},
-            {'name': 'user_id', 'type': 'INT64', 'mode': 'Required'},
-            {'name': 'name', 'type': 'STRING', 'mode': 'Required'},
-            {'name': 'score', 'type': 'INT64', 'mode': 'Required'},
-            {'name': 'create_at', 'type': 'DATE', 'mode': 'Required'},
-        ],
     )
 
     upload_data_gcs >> load_into_bq
