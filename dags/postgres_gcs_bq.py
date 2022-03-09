@@ -36,7 +36,13 @@ with DAG(
         source_format="NEWLINE_DELIMITED_JSON",
         create_disposition="CREATE_IF_NEEDED",
         write_disposition="WRITE_TRUNCATE",
-        autodetect=True,
+        schema_fields=[
+            {'name': 'id', 'type': 'INT64', 'mode': 'Required'},
+            {'name': 'user_id', 'type': 'INT64', 'mode': 'Required'},
+            {'name': 'name', 'type': 'STRING', 'mode': 'Required'},
+            {'name': 'score', 'type': 'INT64', 'mode': 'Required'},
+            {'name': 'create_at', 'type': 'FLOAT', 'mode': 'Required'},
+        ],
         dag=dag,
     )
 
