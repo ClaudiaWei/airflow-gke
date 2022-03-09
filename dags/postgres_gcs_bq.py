@@ -3,6 +3,7 @@ from airflow import DAG
 from datetime import datetime
 from airflow.providers.google.cloud.transfers.postgres_to_gcs import PostgresToGCSOperator
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
+from airflow.contrib.operators.bigquery_operator import BigQueryOperator
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "artful-talon-343315")
 GCS_BUCKET = os.environ.get("GCP_GCS_BUCKET_NAME", "airflow-gke")
@@ -41,5 +42,19 @@ with DAG(
         ],
         dag=dag,
     )
+    bq_aggregation = BigQueryOperator(
+        task_id="bq_aggregation",
+        use_legacy_sql=False,
+        write_disposition='WRITE_TRUNCATE',
+        allow_large_results=True,
+        sql='''
+            SELECT COUNT(DISTINCT user_id) as count, timestamp_value 
+            FROM (
+                SELECT user_id, DATE_TRUNC(TIMESTAMP_SECONDS(cast(create_at as int64)), MONTH) AS timestamp_value 
+                FROM artful-talon-343315.airflow.record
+                ) 
+            GROUP BY timestamp_value
+            ''',
+        dag=dag)
 
-    upload_data_gcs  >> load_into_bq
+    upload_data_gcs >> load_into_bq >> bq_aggregation
