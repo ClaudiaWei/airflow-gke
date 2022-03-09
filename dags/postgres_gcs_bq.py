@@ -6,7 +6,7 @@ from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQue
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "artful-talon-343315")
 GCS_BUCKET = os.environ.get("GCP_GCS_BUCKET_NAME", "airflow-gke")
-FILENAME = "record"
+FILENAME = "record.json"
 SQL_QUERY = "select * from record;"
 DATASET_NAME = "airflow"
 TABLE_NAME = "test"
