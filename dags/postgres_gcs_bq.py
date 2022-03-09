@@ -8,6 +8,8 @@ PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "artful-talon-343315")
 GCS_BUCKET = os.environ.get("GCP_GCS_BUCKET_NAME", "airflow-gke")
 FILENAME = "record"
 SQL_QUERY = "select * from record;"
+DATASET_NAME = "airflow"
+TABLE_NAME = "test"
 
 with DAG(
     dag_id="gcs_operator_dag",
@@ -30,8 +32,8 @@ with DAG(
         task_id="load_into_bq",
         bucket=GCS_BUCKET,
         source_objects=[FILENAME],
-        destination_project_dataset_table='airflow.gcs_to_bq_table',
-        source_format="CSV",
+        destination_project_dataset_table=f"{DATASET_NAME}.{TABLE_NAME}",
+        source_format="NEWLINE_DELIMITED_JSON",
         create_disposition="CREATE_IF_NEEDED",
         write_disposition="WRITE_TRUNCATE",
         dag=dag,
