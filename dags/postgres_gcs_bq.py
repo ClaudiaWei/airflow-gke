@@ -31,7 +31,7 @@ with DAG(
     load_into_bq = GCSToBigQueryOperator(
         task_id="load_into_bq",
         bucket=GCS_BUCKET,
-        source_objects=[FILENAME],
+        source_objects=['record.json'],
         destination_project_dataset_table=f"{DATASET_NAME}.{TABLE_NAME}",
         source_format="NEWLINE_DELIMITED_JSON",
         create_disposition="CREATE_IF_NEEDED",
