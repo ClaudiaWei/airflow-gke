@@ -2,7 +2,7 @@ import os
 from airflow import DAG
 from datetime import datetime
 from airflow.providers.google.cloud.transfers.postgres_to_gcs import PostgresToGCSOperator
-
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "artful-talon-343315")
 GCS_BUCKET = os.environ.get("GCP_GCS_BUCKET_NAME", "airflow-gke")
@@ -26,5 +26,22 @@ with DAG(
         gzip=False,
         use_server_side_cursor=True,
     )
+    load_into_bq = GCSToBigQueryOperator(
+        task_id="load_into_bq",
+        bucket=GCS_BUCKET,
+        source_objects=[FILENAME],
+        destination_project_dataset_table='airflow.gcs_to_bq_table',
+        source_format="JSON",
+        create_disposition="CREATE_IF_NEEDED",
+        write_disposition="WRITE_TRUNCATE",
+        dag=dag,
+        schema_fields=[
+            {'name': 'id', 'type': 'INT64', 'mode': 'Required'},
+            {'name': 'user_id', 'type': 'INT64', 'mode': 'Required'},
+            {'name': 'name', 'type': 'STRING', 'mode': 'Required'},
+            {'name': 'score', 'type': 'INT64', 'mode': 'Required'},
+            {'name': 'create_at', 'type': 'DATE', 'mode': 'Required'},
+        ],
+    )
 
-    upload_data_gcs 
+    upload_data_gcs >> load_into_bq

@@ -7,7 +7,7 @@ def helloWorld():
 
 with DAG(dag_id="hello_world_dag",
          start_date=datetime(2022,3,7),
-         schedule_interval="@daily",
+         schedule_interval="@once",
          catchup=False) as dag:
 
         task1 = PythonOperator(
