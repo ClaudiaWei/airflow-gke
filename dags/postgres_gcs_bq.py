@@ -31,7 +31,7 @@ with DAG(
         bucket=GCS_BUCKET,
         source_objects=[FILENAME],
         destination_project_dataset_table='airflow.gcs_to_bq_table',
-        source_format="JSON",
+        source_format="NEWLINE_DELIMITED_JSON",
         create_disposition="CREATE_IF_NEEDED",
         write_disposition="WRITE_TRUNCATE",
         dag=dag,
