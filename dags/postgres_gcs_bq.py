@@ -11,6 +11,7 @@ FILENAME = "record.json"
 SQL_QUERY = "select * from record;"
 DATASET_NAME = "airflow"
 TABLE_NAME = "record"
+DEST_TABLE_NAME = "bq_aggregation"
 
 with DAG(
     dag_id="gcs_operator_dag",
@@ -55,6 +56,7 @@ with DAG(
                 ) 
             GROUP BY timestamp_value
             ''',
+        destination_dataset_table=f"{DATASET_NAME}.{DEST_TABLE_NAME}",
         dag=dag)
 
     upload_data_gcs >> load_into_bq >> bq_aggregation
