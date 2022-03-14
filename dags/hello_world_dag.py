@@ -1,12 +1,14 @@
+import pendulum
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from datetime import datetime
 
 def helloWorld():
     print('Hello World')
 
+local_tz = pendulum.timezone("Asia/Taipei")
+
 with DAG(dag_id="hello_world_dag",
-         start_date=datetime(2022,3,7),
+         start_date=pendulum.datetime(2022, 3, 14, tzinfo=local_tz),
          schedule_interval="@once",
          catchup=False) as dag:
 
