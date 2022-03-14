@@ -1,6 +1,6 @@
 import os
+import pendulum
 from airflow import DAG
-from datetime import datetime
 from airflow.providers.google.cloud.transfers.postgres_to_gcs import PostgresToGCSOperator
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 from airflow.contrib.operators.bigquery_operator import BigQueryOperator
@@ -15,7 +15,7 @@ DEST_TABLE_NAME = "bq_aggregation"
 
 with DAG(
     dag_id="gcs_operator_dag",
-    start_date=datetime(2020,3,9),
+    start_date=pendulum.datetime(2022, 3, 14, tz="Asia/Taipei"),
     schedule_interval="@once",
     catchup=False,
 ) as dag:
